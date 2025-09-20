@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterpulse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clusterpulse
+  template:
+    metadata:
+      labels:
+        app: clusterpulse
+    spec:
+      containers:
+      - name: clusterpulse
+        image: your-registry/clusterpulse:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_DB
+        - name: POSTGRES_HOST
+          value: 10.105.16.22
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: UPLOAD_FOLDER
+          value: /app_data
+        volumeMounts:
+        - name: upload-volume
+          mountPath: /app_data
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: upload-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+

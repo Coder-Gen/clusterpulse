@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>ClusterPulse</title></head>
+<body>
+  <h1>Upload File</h1>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit">
+  </form>
+  <h2>Uploaded Files</h2>
+  <ul>
+    {% for log in logs %}
+      <li>{{ log.filename }} – {{ log.path }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
+
