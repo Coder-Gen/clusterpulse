@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: clusterpulse
-        image: your-registry/clusterpulse:latest
+        image: ghcr.io/coder-gen/clusterpulse:latest
         ports:
         - containerPort: 5000
         env:
